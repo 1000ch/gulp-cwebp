@@ -2,7 +2,7 @@
 
 ## About
 
-Convert your JPG and PNG images to WebP.
+Convert JPG and PNG images to WebP with gulp task.
 
 [![Build Status](https://travis-ci.org/1000ch/gulp-cwebp.svg?branch=master)](https://travis-ci.org/1000ch/gulp-cwebp)
 [![NPM version](https://badge.fury.io/js/gulp-cwebp.svg)](http://badge.fury.io/js/gulp-cwebp)
