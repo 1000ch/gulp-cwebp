@@ -24,14 +24,14 @@
     "test": "test"
   },
   "devDependencies": {
-    "mocha": "^1.20.1"
+    "mocha": "^1.21.4"
   },
   "license": "MIT",
   "dependencies": {
     "chalk": "^0.5.1",
     "cwebp-bin": "^0.1.6",
-    "graceful-fs": "^3.0.0",
-    "gulp-util": "^3.0.0",
-    "through2": "^0.5.1"
+    "graceful-fs": "^3.0.2",
+    "gulp-util": "^3.0.1",
+    "through2": "^0.6.1"
   }
 }
