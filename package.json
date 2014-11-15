@@ -10,7 +10,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha --timeout=50000 --reporter=spec test/test.js"
+    "test": "mocha --timeout 50000 --reporter spec test/test.js"
   },
   "bugs": {
     "url": "https://github.com/1000ch/gulp-cwebp/issues"
@@ -29,9 +29,9 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^0.5.1",
-    "cwebp-bin": "^0.1.6",
-    "graceful-fs": "^3.0.2",
+    "cwebp-bin": "^2.0.0",
+    "graceful-fs": "^3.0.4",
     "gulp-util": "^3.0.1",
-    "through2": "^0.6.1"
+    "through2": "^0.6.3"
   }
 }
