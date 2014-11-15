@@ -24,7 +24,7 @@
     "test": "test"
   },
   "devDependencies": {
-    "mocha": "^1.21.4"
+    "mocha": "^2.0.1"
   },
   "license": "MIT",
   "dependencies": {
