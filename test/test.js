@@ -11,7 +11,7 @@ it('should convert PNG images', function (callback) {
   var stream = cwebp();
 
   stream.on('data', function (file) {
-    assert(fs.statSync('test/fixtures/test-png.webp').isFile());
+    assert.ok(fs.existsSync(file.path));
     callback();
   });
 
@@ -27,7 +27,7 @@ it('should convert JPG images', function (callback) {
   var stream = cwebp();
 
   stream.on('data', function (file) {
-    assert(fs.statSync('test/fixtures/test-jpg.webp').isFile());
+    assert(fs.existsSync(file.path));
     callback();
   });
 
