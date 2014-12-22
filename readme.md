@@ -34,4 +34,4 @@ gulp.task('default', ['cwebp']);
 
 ## License
 
-MIT
+MIT: http://1000ch.mit-license.org
