@@ -29,8 +29,8 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^0.5.1",
-    "cwebp-bin": "^2.0.2",
-    "gulp-util": "^3.0.1",
+    "cwebp-bin": "^2.0.4",
+    "gulp-util": "^3.0.3",
     "through2": "^0.6.3"
   }
 }
