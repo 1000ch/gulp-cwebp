@@ -20,8 +20,8 @@ $ npm install --save-dev gulp-cwebp
 This is `gulpfile.js` sample.
 
 ```js
-var gulp = require('gulp');
-var cwebp = require('../');
+var gulp  = require('gulp');
+var cwebp = require('gulp-cwebp');
 
 gulp.task('cwebp', function () {
   gulp.src('./fixtures/*')
