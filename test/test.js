@@ -1,51 +1,58 @@
 'use strict';
 
-var fs = require('fs');
-var assert = require('assert');
-var gutil = require('gulp-util');
-var cwebp = require('../index');
+var path   = require('path');
+var assert = require('power-assert');
+var read   = require('vinyl-file').read;
+var isWebP = require('is-webp');
+var cwebp  = require('../');
 
-it('should convert PNG images', function (callback) {
-  this.timeout(false);
+it('should convert PNG images', function(callback) {
 
-  var stream = cwebp();
+  var png = path.join(__dirname, '/fixtures/test-png.png');
 
-  stream.on('data', function (file) {
-    assert.ok(fs.existsSync(file.path));
-    callback();
+  read(png, function(error, file) {
+    assert(!error);
+    var stream = cwebp();
+
+    stream.on('data', function(file) {
+      assert(isWebP(file.contents));
+    });
+
+    stream.on('end', callback);
+    stream.end(file);
   });
-
-  stream.write(new gutil.File({
-    path: __dirname + '/fixtures/test-png.png',
-    contents: fs.readFileSync('test/fixtures/test-png.png')
-  }));
 });
 
-it('should convert JPG images', function (callback) {
-  this.timeout(false);
+it('should convert JPG images', function(callback) {
 
-  var stream = cwebp();
+  var jpg = path.join(__dirname, '/fixtures/test-jpg.jpg');
 
-  stream.on('data', function (file) {
-    assert(fs.existsSync(file.path));
-    callback();
+  read(jpg, function(error, file) {
+    assert(!error);
+    var stream = cwebp();
+
+    stream.on('data', function(file) {
+      assert(isWebP(file.contents));
+    });
+
+    stream.on('end', callback);
+    stream.end(file);
   });
-
-  stream.write(new gutil.File({
-    path: __dirname + '/fixtures/test-jpg.jpg',
-    contents: fs.readFileSync('test/fixtures/test-jpg.jpg')
-  }));
 });
 
-it('should skip unsupported images', function (callback) {
-  var stream = cwebp();
+it('should skip unsupported images', function(callback) {
 
-  stream.on('data', function (file) {
-    assert.strictEqual(file.contents, null);
-    callback();
+  var bmp = path.join(__dirname, '/fixtures/test-bmp.bmp');
+
+  read(bmp, function(error, file) {
+    assert(!error);
+    var stream = cwebp();
+
+    stream.on('data', function(file) {
+      assert.strictEqual(file.contents, null);
+    });
+
+    stream.on('end', callback);
+    stream.end(file);
   });
-
-  stream.write(new gutil.File({
-    path: __dirname + 'fixtures/test.bmp'
-  }));
 });

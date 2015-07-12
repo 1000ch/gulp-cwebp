@@ -1,20 +1,19 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-
-var gutil = require('gulp-util');
-var through = require('through2');
-var chalk = require('chalk');
-
+var fs       = require('fs');
+var path     = require('path');
+var gutil    = require('gulp-util');
+var through  = require('through2');
+var tempfile = require('tempfile');
+var rimraf   = require('rimraf');
 var execFile = require('child_process').execFile;
-var cwebp = require('cwebp-bin').path;
+var cwebp    = require('cwebp-bin');
 
-module.exports = function (options) {
+module.exports = function(options) {
 
   var options = options ? options : {};
 
-  return through.obj(function (file, enc, callback) {
+  return through.obj(function(file, encode, callback) {
 
     if (file.isNull()) {
       this.push(file);
@@ -31,39 +30,32 @@ module.exports = function (options) {
       return callback();
     }
 
-    // create default args
-    var dest = gutil.replaceExtension(file.path, '.webp');
+    var dest = tempfile();
     var args = [file.path, '-o', dest];
 
-    // add options to args
-    Object.keys(options).forEach(function (key) {
+    Object.keys(options).forEach(function(key) {
       args.push('-' + key);
       args.push(options[key]);
     });
 
-    try {
-      var that = this;
-      execFile(cwebp, args, function (error) {
+    execFile(cwebp, args, function(error) {
+
+      if (error) {
+        return callback(new gutil.PluginError('gulp-cwebp', error));
+      }
+
+      file.contents = fs.readFileSync(dest);
+      file.path = gutil.replaceExtension(file.path, '.webp');
+      this.push(file);
+
+      rimraf(dest, function(error) {
         if (error) {
           return callback(new gutil.PluginError('gulp-cwebp', error));
         }
-        fs.readFile(dest, function (error, data) {
-          if (error) {
-            return callback(new gutil.PluginError('gulp-cwebp', error));
-          }
-          gutil.log(
-            chalk.green('✔ ') + file.relative + ' was converted to ' + chalk.green(dest)
-          );
 
-          file.contents = data;
-          file.path = dest;
-
-          that.push(file);
-          callback();
-        });
+        callback();
       });
-    } catch (error) {
-      this.emit('error', new gutil.PluginError('gulp-cwebp', error));
-    }
+
+    }.bind(this));
   });
 };
