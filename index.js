@@ -1,72 +1,69 @@
-var spawn   = require('child_process').spawn;
+'use strict';
+
+var fs = require('fs');
+var path = require('path');
+
+var gutil = require('gulp-util');
 var through = require('through2');
-var cwebp = require('cwebp-bin');
+var chalk = require('chalk');
+
+var execFile = require('child_process').execFile;
+var cwebp = require('cwebp-bin').path;
 
 module.exports = function (options) {
 
-  options = options || {};
+  var options = options ? options : {};
 
-  return through.obj(function (file, encode, callback) {
+  return through.obj(function (file, enc, callback) {
 
     if (file.isNull()) {
-      callback(null, file);
-      return;
+      this.push(file);
+      return callback();
     }
 
     if (file.isStream()) {
-      callback(new Error('gulp-cwebp: Streaming is not supported'));
-      return;
+      this.emit('error', new gutil.PluginError('gulp-cwebp', 'Streaming not supported'));
+      return callback();
     }
 
-    var error  = '';
-    var bytes  = [];
-    var length = 0;
+    if (['.jpg', '.jpeg', '.png'].indexOf(path.extname(file.path).toLowerCase()) === -1) {
+      gutil.log('gulp-cwebp: Skipping unsupported image ' + gutil.colors.blue(file.relative));
+      return callback();
+    }
 
-    var args = [];
+    // create default args
+    var dest = gutil.replaceExtension(file.path, '.webp');
+    var args = [file.path, '-o', dest];
+
+    // add options to args
     Object.keys(options).forEach(function (key) {
       args.push('-' + key);
       args.push(options[key]);
     });
 
-    var childProcess = spawn(cwebp, args);
+    try {
+      var that = this;
+      execFile(cwebp, args, function (error) {
+        if (error) {
+          return callback(new gutil.PluginError('gulp-cwebp', error));
+        }
+        fs.readFile(dest, function (error, data) {
+          if (error) {
+            return callback(new gutil.PluginError('gulp-cwebp', error));
+          }
+          gutil.log(
+            chalk.green('✔ ') + file.relative + ' was converted to ' + chalk.green(dest)
+          );
 
-    childProcess.stderr.setEncoding('utf8');
-    childProcess.stderr.on('data', function (data) {
-      error += data;
-    });
+          file.contents = data;
+          file.path = dest;
 
-    childProcess.stdout.on('data', function (data) {
-      bytes.push(data);
-      length += data.length;
-    });
-
-    childProcess.on('error', function (error) {
-      error.fileName = file.path;
-      callback(error);
-      return;
-    });
-
-    childProcess.on('close', function (code) {
-      if (code) {
-        error = new Error(error);
-        error.fileName = file.path;
-        callback(error);
-        return;
-      }
-
-      if (length < file.contents.length) {
-        file.contents = Buffer.concat(bytes, length);
-      }
-
-      callback(null, file);
-    });
-
-    childProcess.stdin.on('error', function (stdinError) {
-      if (!error) {
-        error = stdinError;
-      }
-    });
-
-    childProcess.stdin.end(file.contents);
+          that.push(file);
+          callback();
+        });
+      });
+    } catch (error) {
+      this.emit('error', new gutil.PluginError('gulp-cwebp', error));
+    }
   });
 };
