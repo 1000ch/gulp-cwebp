@@ -1,51 +1,62 @@
 'use strict';
 
-var fs = require('fs');
-var assert = require('assert');
-var gutil = require('gulp-util');
-var cwebp = require('../index');
+var fs     = require('fs');
+var path   = require('path');
+var assert = require('power-assert');
+var gutil  = require('gulp-util');
+var cwebp  = require('../index');
+var isWebp = require('is-webp');
+var read   = require('vinyl-file').read;
+
 
 it('should convert PNG images', function (callback) {
+
   this.timeout(false);
+  var p = path.join(__dirname, '/fixtures/test-png.png');
 
-  var stream = cwebp();
+  read(p, function (error, file) {
+    assert(!error, error);
+    console.log(2);
+    var stream = cwebp();
 
-  stream.on('data', function (file) {
-    assert.ok(fs.existsSync(file.path));
-    callback();
+    stream.on('data', function (data) {
+      assert(isWebp(data.contents));
+    });
+
+    stream.on('end', callback);
+
+    stream.end(file);
   });
-
-  stream.write(new gutil.File({
-    path: __dirname + '/fixtures/test-png.png',
-    contents: fs.readFileSync('test/fixtures/test-png.png')
-  }));
 });
 
 it('should convert JPG images', function (callback) {
-  this.timeout(false);
 
+  this.timeout(false);
+  var p = path.join(__dirname, '/fixtures/test-jpg.jpg');
   var stream = cwebp();
 
-  stream.on('data', function (file) {
-    assert(fs.existsSync(file.path));
+  stream.on('data', function (data) {
+    assert(isWebp(data.contents));
     callback();
   });
 
   stream.write(new gutil.File({
-    path: __dirname + '/fixtures/test-jpg.jpg',
-    contents: fs.readFileSync('test/fixtures/test-jpg.jpg')
+    path: p,
+    contents: fs.readFileSync(p)
   }));
 });
 
 it('should skip unsupported images', function (callback) {
+
+  var p = path.join(__dirname, '/fixtures/test.bmp');
   var stream = cwebp();
 
-  stream.on('data', function (file) {
-    assert.strictEqual(file.contents, null);
+  stream.on('data', function (data) {
+    assert.equal(data.contents, null);
     callback();
   });
 
   stream.write(new gutil.File({
-    path: __dirname + 'fixtures/test.bmp'
+    path: p
   }));
 });
