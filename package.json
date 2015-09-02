@@ -23,18 +23,18 @@
   "directories": {
     "test": "test"
   },
-  "devDependencies": {
-    "is-webp": "^1.0.0",
-    "mocha": "^2.2.5",
-    "power-assert": "^0.11.0",
-    "vinyl-file": "^1.2.1"
-  },
-  "license": "MIT",
   "dependencies": {
     "cwebp-bin": "^3.0.0",
     "gulp-util": "^3.0.6",
-    "rimraf": "^2.4.1",
+    "rimraf": "^2.4.3",
     "tempfile": "^1.1.1",
     "through2": "^2.0.0"
-  }
+  },
+  "devDependencies": {
+    "is-webp": "^1.0.0",
+    "mocha": "^2.3.0",
+    "power-assert": "^1.0.0",
+    "vinyl-file": "^1.2.1"
+  },
+  "license": "MIT"
 }
