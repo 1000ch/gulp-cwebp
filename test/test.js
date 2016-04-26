@@ -1,17 +1,15 @@
 'use strict';
 
 var path   = require('path');
-var assert = require('power-assert');
-var read   = require('vinyl-file').read;
+var assert = require('assert');
+var vf     = require('vinyl-file');
 var isWebP = require('is-webp');
 var cwebp  = require('../');
 
 it('should convert PNG images', function(callback) {
-
   var png = path.join(__dirname, '/fixtures/test-png.png');
 
-  read(png, function(error, file) {
-    assert(!error);
+  vf.read(png).then(function(file) {
     var stream = cwebp();
 
     stream.on('data', function(file) {
@@ -24,11 +22,9 @@ it('should convert PNG images', function(callback) {
 });
 
 it('should convert JPG images', function(callback) {
-
   var jpg = path.join(__dirname, '/fixtures/test-jpg.jpg');
 
-  read(jpg, function(error, file) {
-    assert(!error);
+  vf.read(jpg).then(function(file) {
     var stream = cwebp();
 
     stream.on('data', function(file) {
@@ -41,11 +37,9 @@ it('should convert JPG images', function(callback) {
 });
 
 it('should skip unsupported images', function(callback) {
-
   var bmp = path.join(__dirname, '/fixtures/test-bmp.bmp');
 
-  read(bmp, function(error, file) {
-    assert(!error);
+  vf.read(bmp).then(function(file) {
     var stream = cwebp();
 
     stream.on('data', function(file) {
