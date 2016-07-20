@@ -1,6 +1,6 @@
 {
   "name": "gulp-cwebp",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Convert JPG and PNG images to WebP with gulp task.",
   "repository": "1000ch/gulp-cwebp",
   "engines": {
