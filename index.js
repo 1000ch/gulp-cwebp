@@ -25,7 +25,7 @@ module.exports = function(options) {
 
     const extension = path.extname(file.path).toLowerCase();
 
-    if (!['.jpg', '.jpeg', '.png'].includes(extension)) {
+    if (['.jpg', '.jpeg', '.png'].indexOf(extension) === -1) {
       gutil.log('gulp-cwebp: Skipping unsupported image ' + gutil.colors.blue(file.relative));
       return callback();
     }
