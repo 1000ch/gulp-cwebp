@@ -1,20 +1,18 @@
 'use strict';
 
-var fs       = require('fs');
-var path     = require('path');
-var gutil    = require('gulp-util');
-var through  = require('through2');
-var tempfile = require('tempfile');
-var rimraf   = require('rimraf');
-var execFile = require('child_process').execFile;
-var cwebp    = require('cwebp-bin');
+const fs = require('fs');
+const path = require('path');
+const gutil = require('gulp-util');
+const through = require('through2');
+const tempfile = require('tempfile');
+const rimraf = require('rimraf');
+const execFile = require('child_process').execFile;
+const cwebp = require('cwebp-bin');
 
 module.exports = function(options) {
-
-  var options = options ? options : {};
+  options = options ? options : {};
 
   return through.obj(function(file, encode, callback) {
-
     if (file.isNull()) {
       this.push(file);
       return callback();
@@ -25,21 +23,22 @@ module.exports = function(options) {
       return callback();
     }
 
-    if (['.jpg', '.jpeg', '.png'].indexOf(path.extname(file.path).toLowerCase()) === -1) {
+    const extension = path.extname(file.path).toLowerCase();
+
+    if (!['.jpg', '.jpeg', '.png'].includes(extension)) {
       gutil.log('gulp-cwebp: Skipping unsupported image ' + gutil.colors.blue(file.relative));
       return callback();
     }
 
-    var dest = tempfile();
-    var args = [file.path, '-o', dest];
+    const dest = tempfile();
+    const args = [file.path, '-o', dest];
 
-    Object.keys(options).forEach(function(key) {
-      args.push('-' + key);
+    Object.keys(options).forEach(key => {
+      args.push(`-${key}`);
       args.push(options[key]);
     });
 
-    execFile(cwebp, args, function(error) {
-
+    execFile(cwebp, args, error => {
       if (error) {
         return callback(new gutil.PluginError('gulp-cwebp', error));
       }
@@ -48,14 +47,13 @@ module.exports = function(options) {
       file.path = gutil.replaceExtension(file.path, '.webp');
       this.push(file);
 
-      rimraf(dest, function(error) {
+      rimraf(dest, error => {
         if (error) {
           return callback(new gutil.PluginError('gulp-cwebp', error));
         }
 
         callback();
       });
-
-    }.bind(this));
+    });
   });
 };
