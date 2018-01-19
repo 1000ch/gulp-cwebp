@@ -2,7 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const gutil = require('gulp-util');
+const PluginError = require('plugin-error');
+const colors = require('ansi-colors');
+const log = require('fancy-log');
+const replaceExtension = require('replace-ext');
 const through = require('through2');
 const execBuffer = require('exec-buffer');
 const cwebp = require('cwebp-bin');
@@ -14,14 +17,14 @@ module.exports = options => through.obj(function(file, encode, callback) {
   }
 
   if (file.isStream()) {
-    this.emit('error', new gutil.PluginError('gulp-cwebp', 'Streaming not supported'));
+    this.emit('error', new PluginError('gulp-cwebp', 'Streaming not supported'));
     return callback();
   }
 
   const extension = path.extname(file.path).toLowerCase();
 
   if (['.jpg', '.jpeg', '.png'].indexOf(extension) === -1) {
-    gutil.log('gulp-cwebp: Skipping unsupported image ' + gutil.colors.blue(file.relative));
+    log('gulp-cwebp: Skipping unsupported image ' + colors.blue(file.relative));
     return callback();
   }
 
@@ -38,10 +41,10 @@ module.exports = options => through.obj(function(file, encode, callback) {
     args  : args
   }).then(buffer => {
     file.contents = buffer;
-    file.path = gutil.replaceExtension(file.path, '.webp');
+    file.path = replaceExtension(file.path, '.webp');
     this.push(file);
     callback();
   }).catch(error => {
-    callback(new gutil.PluginError('gulp-cwebp', error));
+    callback(new PluginError('gulp-cwebp', error));
   });
 });
