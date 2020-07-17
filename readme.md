@@ -1,11 +1,6 @@
-# [gulp-cwebp](https://www.npmjs.org/package/gulp-cwebp)
+# gulp-cwebp [![Build Status](https://travis-ci.org/1000ch/gulp-cwebp.svg?branch=master)](https://travis-ci.org/1000ch/gulp-cwebp)
 
 Convert JPG and PNG images to WebP with gulp task.
-
-[![Build Status](https://travis-ci.org/1000ch/gulp-cwebp.svg?branch=master)](https://travis-ci.org/1000ch/gulp-cwebp)
-[![NPM version](https://badge.fury.io/js/gulp-cwebp.svg)](http://badge.fury.io/js/gulp-cwebp)
-[![Dependency Status](https://david-dm.org/1000ch/gulp-cwebp.svg)](https://david-dm.org/1000ch/gulp-cwebp)
-[![devDependency Status](https://david-dm.org/1000ch/gulp-cwebp/dev-status.svg)](https://david-dm.org/1000ch/gulp-cwebp#info=devDependencies)
 
 ## Install
 
@@ -18,8 +13,8 @@ $ npm install --save-dev gulp-cwebp
 This is `gulpfile.js` sample.
 
 ```js
-var gulp  = require('gulp');
-var cwebp = require('gulp-cwebp');
+const gulp  = require('gulp');
+const cwebp = require('gulp-cwebp');
 
 gulp.task('cwebp', function () {
   gulp.src('./fixtures/*')
@@ -32,4 +27,4 @@ gulp.task('default', ['cwebp']);
 
 ## License
 
-MIT: http://1000ch.mit-license.org
+[MIT](https://1000ch.mit-license.org) © [Shogo Sensui](https://github.com/1000ch)
