@@ -1,43 +1,61 @@
 'use strict';
-
+const fs = require('fs');
 const path = require('path');
-const assert = require('assert');
-const vf = require('vinyl-file');
+const test = require('ava');
+const Vinyl = require('vinyl');
 const isWebP = require('is-webp');
-const cwebp = require('../');
+const cwebp = require('..');
 
-it('should convert PNG images', callback => {
-  const png = path.join(__dirname, '/fixtures/test-png.png');
-  vf.read(png).then(file => {
-    const stream = cwebp();
-    stream.on('data', file => {
-      assert(isWebP(file.contents));
-    });
-    stream.on('end', callback);
-    stream.end(file);
+test.cb('should convert PNG images', t => {
+  const png = path.join(__dirname, 'fixtures/test.png');
+  const webp = path.join(__dirname, 'fixtures/test.webp');
+  const stream = cwebp();
+  const buffer = fs.readFileSync(png);
+
+  stream.on('data', file => {
+    t.true(isWebP(file.contents));
+    t.is(file.path, webp);
   });
+
+  stream.on('end', () => t.end());
+
+  stream.end(new Vinyl({
+    path: png,
+    contents: buffer
+  }));
 });
 
-it('should convert JPG images', callback => {
-  const jpg = path.join(__dirname, '/fixtures/test-jpg.jpg');
-  vf.read(jpg).then(file => {
-    const stream = cwebp();
-    stream.on('data', file => {
-      assert(isWebP(file.contents));
-    });
-    stream.on('end', callback);
-    stream.end(file);
+test.cb('should convert JPG images', t => {
+  const jpg = path.join(__dirname, 'fixtures/test.jpg');
+  const webp = path.join(__dirname, 'fixtures/test.webp');
+  const stream = cwebp();
+  const buffer = fs.readFileSync(jpg);
+
+  stream.on('data', file => {
+    t.true(isWebP(file.contents));
+    t.is(file.path, webp);
   });
+
+  stream.on('end', () => t.end());
+
+  stream.end(new Vinyl({
+    path: jpg,
+    contents: buffer
+  }));
 });
 
-it('should skip unsupported images', callback => {
-  const bmp = path.join(__dirname, '/fixtures/test-bmp.bmp');
-  vf.read(bmp).then(file => {
-    const stream = cwebp();
-    stream.on('data', file => {
-      assert.strictEqual(file.contents, null);
-    });
-    stream.on('end', callback);
-    stream.end(file);
+test.cb('should skip unsupported images', t => {
+  const bmp = path.join(__dirname, 'fixtures/test.bmp');
+  const stream = cwebp();
+
+  stream.end(new Vinyl({
+    path: bmp,
+    contents: null
+  }));
+
+  stream.on('data', file => {
+    t.is(file.contents, null);
   });
+
+  stream.on('end', () => t.end());
 });
