@@ -39,7 +39,7 @@ module.exports = (options = {}) => through.obj(async (file, encode, callback) =>
 
     file.contents = buffer;
     file.path = replaceExt(file.path, '.webp');
-    callback();
+    callback(null, file);
   } catch (error) {
     callback(new PluginError('gulp-cwebp', error));
   }
