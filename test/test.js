@@ -9,7 +9,7 @@ const cwebp = require('..');
 test.cb('should convert PNG images', t => {
   const png = path.join(__dirname, 'fixtures/test.png');
   const webp = path.join(__dirname, 'fixtures/test.webp');
-  const stream = cwebp();
+  const stream = cwebp({lossless: true});
   const buffer = fs.readFileSync(png);
 
   stream.on('data', file => {
@@ -28,7 +28,7 @@ test.cb('should convert PNG images', t => {
 test.cb('should convert JPG images', t => {
   const jpg = path.join(__dirname, 'fixtures/test.jpg');
   const webp = path.join(__dirname, 'fixtures/test.webp');
-  const stream = cwebp();
+  const stream = cwebp({lossless: true});
   const buffer = fs.readFileSync(jpg);
 
   stream.on('data', file => {
@@ -46,7 +46,7 @@ test.cb('should convert JPG images', t => {
 
 test.cb('should skip unsupported images', t => {
   const bmp = path.join(__dirname, 'fixtures/test.bmp');
-  const stream = cwebp();
+  const stream = cwebp({lossless: true});
 
   stream.end(new Vinyl({
     path: bmp,
