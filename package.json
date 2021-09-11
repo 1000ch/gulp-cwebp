@@ -9,6 +9,7 @@
     "type": "git",
     "url": "git://github.com/1000ch/gulp-cwebp.git"
   },
+  "type": "module",
   "license": "MIT",
   "author": {
     "name": "Shogo Sensui",
@@ -35,6 +36,6 @@
     "xo": "^0.44.0"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=12.20"
   }
 }

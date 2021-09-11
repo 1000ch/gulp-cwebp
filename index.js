@@ -1,14 +1,13 @@
-'use strict';
-const path = require('path');
-const PluginError = require('plugin-error');
-const replaceExt = require('replace-ext');
-const through = require('through2');
-const execBuffer = require('exec-buffer');
-const cwebp = require('cwebp-bin');
+import path from 'node:path';
+import PluginError from 'plugin-error';
+import replaceExt from 'replace-ext';
+import through from 'through2';
+import execBuffer from 'exec-buffer';
+import bin from 'cwebp-bin';
 
 const booleanFlags = new Set(['lossless', 'mt', 'low_memory', 'af', 'jpeg_like', 'strong', 'nostrong', 'sharp_yuv']);
 
-module.exports = (options = {}) => through.obj(async (file, encode, callback) => {
+const cwebp = (options = {}) => through.obj(async (file, encode, callback) => {
   if (file.isNull()) {
     callback(null, file);
     return;
@@ -38,8 +37,8 @@ module.exports = (options = {}) => through.obj(async (file, encode, callback) =>
   try {
     const buffer = await execBuffer({
       input: file.contents,
-      bin: cwebp,
-      args
+      bin,
+      args,
     });
 
     file.contents = buffer;
@@ -49,3 +48,5 @@ module.exports = (options = {}) => through.obj(async (file, encode, callback) =>
     callback(new PluginError('gulp-cwebp', error));
   }
 });
+
+export default cwebp;

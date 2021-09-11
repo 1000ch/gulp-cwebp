@@ -1,14 +1,13 @@
-'use strict';
-const fs = require('fs');
-const path = require('path');
-const test = require('ava');
-const Vinyl = require('vinyl');
-const isWebP = require('is-webp');
-const cwebp = require('..');
+import fs from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import test from 'ava';
+import Vinyl from 'vinyl';
+import isWebP from 'is-webp';
+import cwebp from '../index.js';
 
 test.cb('should convert PNG images', t => {
-  const png = path.join(__dirname, 'fixtures/test.png');
-  const webp = path.join(__dirname, 'fixtures/test.webp');
+  const png = fileURLToPath(new URL('fixtures/test.png', import.meta.url));
+  const webp = fileURLToPath(new URL('fixtures/test.webp', import.meta.url));
   const stream = cwebp({lossless: true});
   const buffer = fs.readFileSync(png);
 
@@ -21,13 +20,13 @@ test.cb('should convert PNG images', t => {
 
   stream.end(new Vinyl({
     path: png,
-    contents: buffer
+    contents: buffer,
   }));
 });
 
 test.cb('should convert JPG images', t => {
-  const jpg = path.join(__dirname, 'fixtures/test.jpg');
-  const webp = path.join(__dirname, 'fixtures/test.webp');
+  const jpg = fileURLToPath(new URL('fixtures/test.jpg', import.meta.url));
+  const webp = fileURLToPath(new URL('fixtures/test.webp', import.meta.url));
   const stream = cwebp({lossless: true});
   const buffer = fs.readFileSync(jpg);
 
@@ -40,17 +39,17 @@ test.cb('should convert JPG images', t => {
 
   stream.end(new Vinyl({
     path: jpg,
-    contents: buffer
+    contents: buffer,
   }));
 });
 
 test.cb('should skip unsupported images', t => {
-  const bmp = path.join(__dirname, 'fixtures/test.bmp');
+  const bmp = fileURLToPath(new URL('fixtures/test.bmp', import.meta.url));
   const stream = cwebp({lossless: true});
 
   stream.end(new Vinyl({
     path: bmp,
-    contents: null
+    contents: null,
   }));
 
   stream.on('data', file => {
