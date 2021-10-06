@@ -1,4 +1,4 @@
-# gulp-cwebp ![GitHub Actions Status](https://github.com/1000ch/gulp-cwebp/workflows/test/badge.svg?branch=master)
+# gulp-cwebp ![GitHub Actions Status](https://github.com/1000ch/gulp-cwebp/workflows/test/badge.svg)
 
 Convert JPG and PNG images to WebP with gulp task.
 
