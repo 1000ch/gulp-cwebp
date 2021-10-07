@@ -3,9 +3,10 @@ import {fileURLToPath} from 'node:url';
 import test from 'ava';
 import Vinyl from 'vinyl';
 import isWebP from 'is-webp';
+import pEvent from 'p-event';
 import cwebp from '../index.js';
 
-test.cb('should convert PNG images', t => {
+test('should convert PNG images', async t => {
   const png = fileURLToPath(new URL('fixtures/test.png', import.meta.url));
   const webp = fileURLToPath(new URL('fixtures/test.webp', import.meta.url));
   const stream = cwebp({lossless: true});
@@ -16,15 +17,15 @@ test.cb('should convert PNG images', t => {
     t.is(file.path, webp);
   });
 
-  stream.on('end', () => t.end());
-
   stream.end(new Vinyl({
     path: png,
     contents: buffer,
   }));
+
+  await pEvent(stream, 'end');
 });
 
-test.cb('should convert JPG images', t => {
+test('should convert JPG images', async t => {
   const jpg = fileURLToPath(new URL('fixtures/test.jpg', import.meta.url));
   const webp = fileURLToPath(new URL('fixtures/test.webp', import.meta.url));
   const stream = cwebp({lossless: true});
@@ -35,15 +36,15 @@ test.cb('should convert JPG images', t => {
     t.is(file.path, webp);
   });
 
-  stream.on('end', () => t.end());
-
   stream.end(new Vinyl({
     path: jpg,
     contents: buffer,
   }));
+
+  await pEvent(stream, 'end');
 });
 
-test.cb('should skip unsupported images', t => {
+test('should skip unsupported images', async t => {
   const bmp = fileURLToPath(new URL('fixtures/test.bmp', import.meta.url));
   const stream = cwebp({lossless: true});
 
@@ -56,5 +57,5 @@ test.cb('should skip unsupported images', t => {
     t.is(file.contents, null);
   });
 
-  stream.on('end', () => t.end());
+  await pEvent(stream, 'end');
 });
