@@ -23,7 +23,7 @@
     "space": 2
   },
   "dependencies": {
-    "cwebp-bin": "^6.1.1",
+    "cwebp-bin": "^7.0.0",
     "exec-buffer": "^3.2.0",
     "plugin-error": "^1.0.0",
     "replace-ext": "^2.0.0",
