@@ -3,7 +3,7 @@ import {fileURLToPath} from 'node:url';
 import test from 'ava';
 import Vinyl from 'vinyl';
 import isWebP from 'is-webp';
-import pEvent from 'p-event';
+import {pEvent} from 'p-event';
 import cwebp from '../index.js';
 
 test('should convert PNG images', async t => {
